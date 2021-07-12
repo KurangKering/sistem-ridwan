@@ -10,6 +10,7 @@ class FCM:
         self.max_iter = max_iter
         self.m = m
         self.error = error
+        self.list_of_error = []
         self.rng = np.random.default_rng(random_state)
 
     def fit(self, X, u=None):
@@ -21,14 +22,15 @@ class FCM:
 
         if (u is not None):
             self.u = u.copy()
+
+        self.initial_u = self.u.copy()
         
         for iteration in range(self.max_iter):
             u_old = self.u.copy()
-            print(f'u ke-{iteration} = {u_old}')
             self.centers = FCM._next_centers(X, self.u, self.m)
             self.u = self.__predict(X)
             err = np.linalg.norm(self.u - u_old)
-            print(f'error ke-{iteration} = {err}')
+            self.list_of_error.append({'iterasi': iteration+1, 'error': err})
             # Stopping rule
             if np.linalg.norm(self.u - u_old) < self.error:
                 break

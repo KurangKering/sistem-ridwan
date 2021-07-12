@@ -1,0 +1,341 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block import-css %}
+
+{% endblock import-css %}
+
+{% block content %}
+<div class="wrapper wrapper-content">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="ibox ">
+					<div class="ibox-title bg-primary">
+						<h3>Table Data Latih Kiper</h3>
+						<div class="ibox-tools">
+							
+							<button type="button" class="btn btn-success" id="tambah_data_button"><i class="fas fa-plus"></i> Tambah data</button>
+							<button type="button" class="btn btn-success" id="import_data_button"><i class="fas fa-plus"></i> Tambah data dari excel</button>
+
+						</div>
+					</div>
+					<div class="ibox-content">
+
+
+
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered table-hover" id="data_latih_table" >
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Nama</th>
+										<th>Usia</th>
+										<th>inti</th>
+										<th>Cadangan</th>
+										<th>mop</th>
+										<th>kk</th>
+										<th>km</th>
+										<th>gol</th>
+										<th>kemasukan</th>
+										<th>penyelamatan</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+
+
+
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+</div>
+<div class="modal inmodal" id="data_latih_modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content animated bounceInRight">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="data-latih-modal-title">Tambah data latih kiper</h4>
+			</div>
+			<form id="data_latih_form" method="POST">
+				<input type="hidden" name="id" value="id" id="id">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-6 b-r">
+							<div class="form-group"><label>Nama</label> <input required id="nama" type="text" class="form-control"></div>
+							<div class="form-group"><label>Usia</label> <input required id="usia" type="number" class="form-control"></div>
+							<div class="form-group"><label>Pemain inti</label> <input required id="pemain_inti" type="number" class="form-control"></div>
+							<div class="form-group"><label>Cadangan main</label> <input required id="cadangan_main" type="number" class="form-control"></div>
+							<div class="form-group"><label>MOP</label> <input required id="mop" type="number" class="form-control"></div>
+							
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group"><label>KK</label> <input required id="kk" type="number" class="form-control"></div>
+							<div class="form-group"><label>KM</label> <input required id="km" type="number" class="form-control"></div>
+							<div class="form-group"><label>Gol</label> <input required id="gol" type="number" class="form-control"></div>
+							<div class="form-group"><label>Kemasukan</label> <input required id="kemasukan" type="number" class="form-control"></div>
+							<div class="form-group"><label>Penyelamatan</label> <input required id="penyelamatan" type="number" class="form-control"></div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Simpan</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal inmodal" id="import_data_modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content animated bounceInRight">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Import data dari excel</h4>
+			</div>
+			<form id="import_data_form" method="POST">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label>File</label> 
+								<input type="file" id="excel_file" name="excel_file" class="form-control">
+							</div>
+							<div>
+								<label> <input type="checkbox" class="i-checks" name="hapus_seluruh_data"  id="hapus_seluruh_data"> Hapus seluruh data </label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">import</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- /.modal -->
+
+<template  id="render-action-button-template">
+	<div class="btn-group">
+		<button type="button" class="btn  btn-outline-info btn-edit" onclick="show_edit_modal('place_here')"><i class="fa fa-edit"></i></button>
+		<button type="button" class="btn  btn-outline-danger btn-delete" onclick="show_delete_modal('place_here')" ><i class="fa fa-trash"></i></button>
+	</div>
+</template>
+{% endblock content %}
+
+{% block inline-js %}
+<script>
+$(function() {
+	$("#data_latih_form").submit(function(e) {
+		e.preventDefault();
+
+		let form_data = {
+			id: $('#id').val(),
+			nama: $('#nama').val(),
+			usia: $('#usia').val(),
+			pemain_inti: $('#pemain_inti').val(),
+			cadangan_main: $('#cadangan_main').val(),
+			mop: $('#mop').val(),
+			kk: $('#kk').val(),
+			km: $('#km').val(),
+			gol: $('#gol').val(),
+			kemasukan: $('#kemasukan').val(),
+			penyelamatan: $('#penyelamatan').val(),
+		};
+
+		$.ajax({
+			url: '{% url "data-latih-kiper/create_or_update" %}',
+			type: 'POST',
+			data: form_data,
+		})
+		.done(function(response) {
+			if (!response.success) {
+
+			} else {
+				clearForm();
+				data_latih_table.ajax.reload(null, false);
+				$("#data_latih_modal").modal('hide');
+				Swal.fire({icon: 'success', showConfirmButton: false, timer: 1000})
+
+			}
+		});
+
+	});
+
+	$(document).on('submit', 'form#import_data_form', function(e) {
+		e.preventDefault();
+		var data = new FormData(this);
+
+		var url = "{% url 'data-latih-kiper/import' %}"
+		$.ajax({
+			type: "POST",
+			url: url,
+			dataType: 'json',
+			data: data,
+			cache: false,
+			contentType: false,
+			processData: false
+		})
+		.done(function(response) {
+			if (response.success) {
+				clearFormImport();
+				data_latih_table.ajax.reload(null, false);
+				$("#import_data_modal").modal('hide');
+				Swal.fire({icon: 'success', showConfirmButton: false, timer: 1000})
+			}
+		});
+		
+	})
+
+	$("#tambah_data_button").click(function(e) {
+		show_tambah_modal();
+	});
+
+	$("#import_data_button").click(function(e) {
+		show_import_modal();
+	});
+
+	let data_latih_table = $("#data_latih_table").DataTable({
+		"processing": true,
+		"serverSide": true,
+		"ajax": "{% url 'data-latih-kiper/show_all' %}",
+		"columns": [
+
+		{ "data": "id" },
+		{ "data": "nama" },
+		{ "data": "usia" },
+		{ "data": "pemain_inti" },
+		{ "data": "cadangan_main" },
+		{ "data": "mop" },
+		{ "data": "kk" },
+		{ "data": "km" },
+		{ "data": "gol" },
+		{ "data": "kemasukan" },
+		{ "data": "penyelamatan" },
+		{ "data": null },
+		],
+		"columnDefs": [ {
+			"targets": -1,
+			"data": null,
+			"sortable": false,
+			"render" : function(data, type, row) {
+				return render_edit_delete_button(row['id']);
+			}
+		} ],
+		
+
+	});
+});
+
+function clearForm() {
+	$("#id").val('');
+	$("#nama").val('');
+	$("#usia").val('');
+	$("#pemain_inti").val('');
+	$("#cadangan_main").val('');
+	$("#mop").val('');
+	$("#kk").val('');
+	$("#km").val('');
+	$("#gol").val('');
+	$("#kemasukan").val('');
+	$("#penyelamatan").val('');
+}
+function clearFormImport() {
+	$('#hapus_seluruh_data').prop('checked', false); 
+
+	$("#excel_file").val('');
+
+}
+
+function show_import_modal() {
+	clearForm();
+	$("#import_data_modal").modal('show');
+}
+
+
+function show_tambah_modal() {
+	clearForm();
+	$("#data-latih-modal-title").text('Form tambah data kiper');
+	$("#data_latih_modal").modal('show');
+}
+
+function show_delete_modal(id) {
+	Swal.fire({
+		icon : 'warning',
+		title : 'Hapus data',
+		text : 'Yakin ingin menghapus data?',
+		allowOutsideClick: false,
+		showCancelButton: true,
+		confirmButtonText: 'Hapus',
+		cancelButtonText: 'Jangan',
+
+	})
+	.then((res) => {
+		if (res.value) {
+			$.ajax({
+				url: '{% url "data-latih-kiper/delete" %}',
+				type: 'POST',
+				data: {id: id},
+			})
+			.done(function(response) {
+				if (!response.success) {
+
+				} else {
+					$("#data_latih_table").DataTable().ajax.reload(null, false);
+					Swal.fire({icon: 'success', showConfirmButton: false, timer: 1000})
+				}
+			});
+		}
+	} );
+
+
+
+}
+function show_edit_modal(id) {
+
+
+	$.ajax({
+		url: '{% url "data-latih-kiper/detail" %}',
+		type: 'POST',
+		data: {id: id},
+	})
+	.done(function(response) {
+		if (!response.success) {
+
+		} else {
+			$('#id').val(response.messages.id),
+			$('#nama').val(response.messages.nama),
+			$('#usia').val(response.messages.usia),
+			$('#pemain_inti').val(response.messages.pemain_inti),
+			$('#cadangan_main').val(response.messages.cadangan_main),
+			$('#mop').val(response.messages.mop),
+			$('#kk').val(response.messages.kk),
+			$('#km').val(response.messages.km),
+			$('#gol').val(response.messages.gol),
+			$('#kemasukan').val(response.messages.kemasukan),
+			$('#penyelamatan').val(response.messages.penyelamatan),
+			$("#data-latih-modal-title").text('Form ubah data latih kiper');
+
+			$("#data_latih_modal").modal('show');
+		}
+	});
+
+}
+
+function render_edit_delete_button(id) {
+	let tmpl = $("#render-action-button-template").html();
+	tmpl = tmpl.replace('place_here', id);
+	tmpl = tmpl.replace('place_here', id);
+
+	return tmpl;
+
+}
+</script>
+{% endblock inline-js %}
