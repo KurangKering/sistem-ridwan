@@ -16,9 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-
+from fcm import views as fcm_views
 urlpatterns = [
-	path('', views.index, name="index"),
+	path('', fcm_views.index_pengujian_kiper, name="index"),
     path('admin/', admin.site.urls),
     path('', include('fcm.urls')),
 
