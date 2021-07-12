@@ -169,8 +169,9 @@ def import_data_latih_kiper(request):
 		if (connection.vendor == 'sqlite'):
 			sql = "DELETE FROM SQLite_sequence WHERE name='{}';".format(table_name)
 		elif (connection.vendor == 'postgresql'):
+
 			sequence = f"{table_name}_id_seq"
-			sql = "ALTER SEQUENCE {} RESTART WITH 1;".format(sequence)
+			sql = "ALTER SEQUENCE IF EXISTS {} RESTART WITH 1;".format(sequence)
 
 
 		with connection.cursor() as cursor:
