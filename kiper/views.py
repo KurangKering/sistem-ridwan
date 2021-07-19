@@ -240,7 +240,7 @@ def pengujian_proses(request):
 			'norm_penyelamatan']
 
 	averages = {f"avg_{'_'.join(j.split('_')[1:])}": [] for j in attributes}
-	title_averages = [f"Grafik {' '.join(j.split('_')[1:])}" for j in attributes]
+	title_averages = [f"Grafik Rata-Rata {' '.join(j.split('_')[1:])}" for j in attributes]
 	key_averages = list(averages.keys())
 	for i in unique_clusters:
 		indices = np.where(hasil_cluster == i)[0].tolist()
