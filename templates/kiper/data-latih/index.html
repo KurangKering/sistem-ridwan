@@ -151,7 +151,7 @@ $(function() {
 		};
 
 		$.ajax({
-			url: '{% url "data-latih-kiper/create_or_update" %}',
+			url: '{% url "kiper/data-latih/create_or_update" %}',
 			type: 'POST',
 			data: form_data,
 		})
@@ -173,7 +173,7 @@ $(function() {
 		e.preventDefault();
 		var data = new FormData(this);
 
-		var url = "{% url 'data-latih-kiper/import' %}"
+		var url = "{% url 'kiper/data-latih/import' %}"
 		$.ajax({
 			type: "POST",
 			url: url,
@@ -205,7 +205,7 @@ $(function() {
 	let data_latih_table = $("#data_latih_table").DataTable({
 		"processing": true,
 		"serverSide": true,
-		"ajax": "{% url 'data-latih-kiper/show_all' %}",
+		"ajax": "{% url 'kiper/data-latih/datatables' %}",
 		"columns": [
 
 		{ "data": "id" },
@@ -280,7 +280,7 @@ function show_delete_modal(id) {
 	.then((res) => {
 		if (res.value) {
 			$.ajax({
-				url: '{% url "data-latih-kiper/delete" %}',
+				url: '{% url "kiper/data-latih/delete" %}',
 				type: 'POST',
 				data: {id: id},
 			})
@@ -302,7 +302,7 @@ function show_edit_modal(id) {
 
 
 	$.ajax({
-		url: '{% url "data-latih-kiper/detail" %}',
+		url: '{% url "kiper/data-latih/detail" %}',
 		type: 'POST',
 		data: {id: id},
 	})

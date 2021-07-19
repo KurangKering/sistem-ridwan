@@ -218,7 +218,7 @@ $(function() {
 		});
 		$("#content_ajax").html('');
 		var data = new FormData(this);
-		var url = "{% url 'pengujian/proses_pengujian_kiper' %}";
+		var url = "{% url 'kiper/pengujian/proses' %}";
 		$.ajax({
 			type: "POST",
 			url: url,

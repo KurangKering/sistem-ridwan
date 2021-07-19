@@ -1,6 +1,6 @@
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
-from fcm.models import DataLatihKiper
+from .models import DataLatihKiper
 from django.db.models import Q
 
 import functools
