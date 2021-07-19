@@ -223,9 +223,44 @@ def pengujian_proses(request):
 		convert_to_string = {k:str(v) for k,v in data_with_hasil[x].items()}
 		data_with_hasil[x] = convert_to_string
 
-	hasil_cluster = hasil_cluster.tolist()
-	initial_u = fcm.initial_u.copy().tolist()
-	final_u = fcm.u.copy().tolist()
+	data_latih_numpy = np.array(data_latih)	
+	unique_clusters = np.unique(hasil_cluster)
+	data_per_cluster = []
+	indices_clusters = []
+	data_latih_clusters = []
+	attributes = [
+			'norm_usia',
+			'norm_pemain_inti',
+			'norm_cadangan_main',
+			'norm_mop',
+			'norm_kk',
+			'norm_km',
+			'norm_gol',
+			'norm_kemasukan',
+			'norm_penyelamatan']
+
+	averages = {f"avg_{'_'.join(j.split('_')[1:])}": [] for j in attributes}
+	title_averages = [f"Grafik {' '.join(j.split('_')[1:])}" for j in attributes]
+	key_averages = list(averages.keys())
+	for i in unique_clusters:
+		indices = np.where(hasil_cluster == i)[0].tolist()
+		cluster = data_latih_numpy[indices]
+		for j in range(len(attributes)):
+			avg = np.mean([x[attributes[j]] for x in cluster])
+			averages[key_averages[j]].append(avg)
+
+
+		indices_clusters.append(indices)
+		data_latih_clusters.append(cluster.tolist())
+
+
+
+
+
+
+	hasil_cluster_list = hasil_cluster.tolist()
+	initial_u_list = fcm.initial_u.copy().tolist()
+	final_u_list = fcm.u.copy().tolist()
 	current_error = fcm.list_of_error[-1]
 
 	output = {
@@ -233,11 +268,15 @@ def pengujian_proses(request):
 		'max_iter': max_iter,
 		'max_error': max_error,
 		'data_latih': data_latih,
-		'initial_u': initial_u,
-		'final_u': final_u,
+		'initial_u': initial_u_list,
 		'list_of_error': fcm.list_of_error,
-		'hasil_cluster': hasil_cluster,
+		'hasil_cluster': hasil_cluster_list,
 		'current_error': current_error,
+		'final_u': final_u_list,
+		'data_latih_clusters': data_latih_clusters,
+		'averages': averages,
+		'title_averages': title_averages,
+
 	}
 
 	context = context_response(True, output)
