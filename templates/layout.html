@@ -57,14 +57,18 @@
                                 <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Data latih</a>
                                 <ul role="menu" class="dropdown-menu">
                                     <li><a href="{% url 'kiper/data-latih/index' %}">kiper</a></li>
-                                    <li><a href="">pemain belakang</a></li>
+                                    <li><a href="{% url 'pemain_belakang/data-latih/index' %}">Pemain Belakang</a></li>
+                                    <li><a href="{% url 'pemain_tengah/data-latih/index' %}">Pemain Tengah</a></li>
+                                    <li><a href="{% url 'pemain_depan/data-latih/index' %}">Pemain Depan</a></li>
                                 </ul>
                             </li>
                             <li class="dropdown">
                                 <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Pengujian FCM</a>
                                 <ul role="menu" class="dropdown-menu">
                                     <li><a href="{% url 'kiper/pengujian/index' %}">kiper</a></li>
-                                    <li><a href="">pemain belakang</a></li>
+                                    <li><a href="{% url 'pemain_belakang/pengujian/index' %}">Pemain Belakang</a></li>
+                                    <li><a href="{% url 'pemain_tengah/pengujian/index' %}">Pemain Tengah</a></li>
+                                    <li><a href="{% url 'pemain_depan/pengujian/index' %}">Pemain Depan</a></li>
                                 </ul>
                             </li>
                             

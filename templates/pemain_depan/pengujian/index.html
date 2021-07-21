@@ -1,0 +1,636 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block import-css %}
+
+{% endblock import-css %}
+
+{% block content %}
+<div class="wrapper wrapper-content">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="ibox ">
+					<div class="ibox-title bg-primary">
+						<h3></h3>
+						<div class="ibox-tools">
+
+
+						</div>
+					</div>
+					<div class="ibox-content">
+						<form id="pengujian_pemain_depan_form" method="POST">
+							<div class="form-group row">
+								<label class="col-lg-2 col-form-label">Jumlah Cluster</label>
+
+								<div class="col-lg-10">
+									<input type="number" class="form-control" id="jumlah_cluster" name="jumlah_cluster" value="4"> 
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-lg-2 col-form-label">Max Iterasi</label>
+
+
+
+								<div class="col-lg-10">
+									<input type="number" id="max_iter" name="max_iter" value="100" class="form-control">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-lg-2 col-form-label">Error</label>
+
+								<div class="col-lg-10">
+									<input type="text" id="max_error" name="max_error" value="0.0001"  class="form-control">
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<div class="col-lg-offset-2 col-lg-10">
+									<button class="btn btn-sm btn-white" type="submit">Mulai pengujian</button>
+								</div>
+							</div>
+						</form>
+
+
+
+
+
+
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<div id="content_ajax">
+
+		</div>
+
+	</div>
+</div>
+
+
+
+<template id="detail_error_template">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title bg-primary">
+					<h3>Detail error</h3>
+					<div class="ibox-tools">
+
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover" >
+							<thead>
+								<tr>
+									<th>Iterasi</th>
+									<th>Error</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</template>
+<template id="initial_u_template">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title bg-primary">
+					<h3>Initial U</h3>
+					<div class="ibox-tools">
+
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover" >
+
+
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</template>
+<template id="final_u_template">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title bg-primary">
+					<h3>Final U</h3>
+					<div class="ibox-tools">
+
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover" >
+
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</template>
+<template id="data_latih_with_cluster_template">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title bg-primary">
+					<h3>Data Pemain dan Cluster</h3>
+					<div class="ibox-tools">
+
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover" >
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Nama</th>
+									<th>Usia</th>
+									<th>Pemain inti</th>
+									<th>Cadangan main</th>
+									<th>Mop</th>
+									<th>Kk</th>
+									<th>Km</th>
+									<th>Gol</th>
+									<th>Assist</th>
+									<th>Pelanggaran</th>
+									<th>Dilanggar Lawan</th>
+									<th>Akurasi Tembakan</th>
+									<th>Akurasi Operan</th>
+									<th>Akurasi Umpan Silang</th>
+									<th>Sukses Dribel</th>
+									<th>Cluster</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</template>
+<template id="data_latih_per_cluster_template">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title bg-primary">
+					<h3 class="title-data-latih-per-cluster">Cluster 0</h3>
+					<div class="ibox-tools">
+
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover" >
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Nama</th>
+									<th>Usia</th>
+									<th>Pemain inti</th>
+									<th>Cadangan main</th>
+									<th>Mop</th>
+									<th>Kk</th>
+									<th>Km</th>
+									<th>Gol</th>
+									<th>Assist</th>
+									<th>Pelanggaran</th>
+									<th>Dilanggar Lawan</th>
+									<th>Akurasi Tembakan</th>
+									<th>Akurasi Operan</th>
+									<th>Akurasi Umpan Silang</th>
+									<th>Sukses Dribel</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</template>
+<template id="grafik_template">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-title bg-primary">
+					<h3 class="title-grafik">Grafik</h3>
+					<div class="ibox-tools">
+
+					</div>
+				</div>
+				<div class="ibox-content">
+					<canvas class="canvas-grafik"></canvas>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</template>
+
+{% endblock content %}
+
+{% block inline-js %}
+
+<script>
+$(function() {
+	$(document).on('submit', 'form#pengujian_pemain_depan_form', function(e) {
+		e.preventDefault();
+		showSpinner();
+		var tables = $.fn.dataTable.fnTables(true);
+		$(tables).each(function () {
+			$(this).DataTable().destroy(false);
+		});
+		$("#content_ajax").html('');
+		var data = new FormData(this);
+		var url = "{% url 'pemain_depan/pengujian/proses' %}";
+		$.ajax({
+			type: "POST",
+			url: url,
+			dataType: 'json',
+			data: data,
+			cache: false,
+			contentType: false,
+			processData: false
+		})
+		.done(function(response) {
+			if (!response.success) {
+				return
+			}
+
+			// menampilkan detail error dimulai dari sini
+			// 
+			// 
+			let detail_error_template = $("#detail_error_template").clone().html()
+
+
+			$("#content_ajax").append(detail_error_template);
+
+
+			let data = response.messages;
+			list_of_tr_error = renderTableError(data);
+
+			$("#content_ajax").find('tbody').eq(-1).html(list_of_tr_error);
+			$("#content_ajax").find('table').DataTable({
+				responsive: true,
+				dom: '<"html5buttons"B>lTfgitp',
+				buttons: [
+				{ extend: 'copy'},
+				{extend: 'csv'},
+				{extend: 'excel', title: 'detail error'},
+				{extend: 'pdf', title: 'detail error'},
+
+				{extend: 'print',
+				customize: function (win){
+					$(win.document.body).addClass('white-bg');
+					$(win.document.body).css('font-size', '10px');
+
+					$(win.document.body).find('table')
+					.addClass('compact')
+					.css('font-size', 'inherit');
+				}
+			}]});
+
+			// menampilkan detail table initial u dimulai dari sini 
+			// 
+			// 
+			let initial_u_template = $("#initial_u_template").clone().html()
+
+			$("#content_ajax").append(initial_u_template);
+
+			let jumlah_cluster = $("#jumlah_cluster").val();
+
+			let content_initial_u = renderTableInitialU(jumlah_cluster, data);
+			$("#content_ajax").find('table').eq(-1).append(content_initial_u);
+			$("#content_ajax").find('table').eq(-1).DataTable({
+				ordering: false,
+				responsive: true,
+				dom: '<"html5buttons"B>lTfgitp',
+				buttons: [
+				{ extend: 'copy'},
+				{extend: 'csv'},
+				{extend: 'excel', title: 'initial u'},
+				{extend: 'pdf', title: 'initial u'},
+
+				{extend: 'print',
+				customize: function (win){
+					$(win.document.body).addClass('white-bg');
+					$(win.document.body).css('font-size', '10px');
+
+					$(win.document.body).find('table')
+					.addClass('compact')
+					.css('font-size', 'inherit');
+				}
+			}]});
+
+
+			// menampilkan detail table final u dimulai dari sini 
+			// 
+			// 
+			let final_u_template = $("#final_u_template").clone().html()
+
+			$("#content_ajax").append(final_u_template);
+
+			let content_final_u = renderTableFinalU(jumlah_cluster, data);
+
+			$("#content_ajax").find('table').eq(-1).append(content_final_u);
+			$("#content_ajax").find('table').eq(-1).DataTable({
+				ordering: false,
+				responsive: true,
+				dom: '<"html5buttons"B>lTfgitp',
+				buttons: [
+				{ extend: 'copy'},
+				{extend: 'csv'},
+				{extend: 'excel', title: 'final u'},
+				{extend: 'pdf', title: 'final u'},
+
+				{extend: 'print',
+				customize: function (win){
+					$(win.document.body).addClass('white-bg');
+					$(win.document.body).css('font-size', '10px');
+
+					$(win.document.body).find('table')
+					.addClass('compact')
+					.css('font-size', 'inherit');
+				}
+			}]} );
+
+			// menampilkan data latih with cluster dimulai dari sini 
+			// 
+			// 
+			let data_latih_with_cluster_template = $("#data_latih_with_cluster_template").clone().html()
+
+			$("#content_ajax").append(data_latih_with_cluster_template);
+
+			let list_of_tr_with_cluster = renderTableDataWithCluster(data);
+
+
+			$("#content_ajax").find('table').eq(-1).find('tbody').append(list_of_tr_with_cluster);
+			$("#content_ajax").find('table').eq(-1).DataTable({
+				ordering: false,
+				responsive: true,
+				dom: '<"html5buttons"B>lTfgitp',
+				buttons: [
+				{ extend: 'copy'},
+				{extend: 'csv'},
+				{extend: 'excel', title: 'data dan cluster'},
+				{extend: 'pdf', title: 'data dan cluster'},
+
+				{extend: 'print',
+				customize: function (win){
+					$(win.document.body).addClass('white-bg');
+					$(win.document.body).css('font-size', '10px');
+
+					$(win.document.body).find('table')
+					.addClass('compact')
+					.css('font-size', 'inherit');
+				}
+			}]} );
+
+			//menampilkan data per cluster disini
+			for (var i = 0; i < data.data_latih_clusters.length; i++) {
+				let template = $("#data_latih_per_cluster_template").clone().html();
+				$("#content_ajax").append(template);
+				index = i + 1;
+				let title = "Data Pemain Cluster "+ index;
+				$(document).find('.title-data-latih-per-cluster').eq(-1).text(title);
+				let content_tr = renderTablePerCluster(data.data_latih_clusters[i]);
+				$("#content_ajax").find('table').eq(-1).find('tbody').append(content_tr);
+				$("#content_ajax").find('table').eq(-1).DataTable({
+					ordering: false,
+					responsive: true,
+					dom: '<"html5buttons"B>lTfgitp',
+					buttons: [
+					{ extend: 'copy'},
+					{extend: 'csv'},
+					{extend: 'excel', title: 'data dan cluster'},
+					{extend: 'pdf', title: 'data dan cluster'},
+
+					{extend: 'print',
+					customize: function (win){
+						$(win.document.body).addClass('white-bg');
+						$(win.document.body).css('font-size', '10px');
+
+						$(win.document.body).find('table')
+						.addClass('compact')
+						.css('font-size', 'inherit');
+					}
+				}]
+			} );
+			}
+
+			let num_cluster = $("#jumlah_cluster").val();
+			let seq = Array(Number(num_cluster)).fill().map((el, ind) => "Cluster" + Number(ind+1));
+			var ii = 0
+			for (var k in data.averages) {
+				let template = $("#grafik_template").clone().html();
+				$("#content_ajax").append(template);
+				$(document).find('.title-grafik').eq(-1).text(data.title_averages[ii]);
+				let data_grafik = data.averages[k];
+				var lineData = {
+					labels: seq,
+					datasets: [
+
+					{
+						label: data.title_averages[ii],
+						backgroundColor: 'rgba(26,179,148,0.5)',
+						borderColor: "rgba(26,179,148,0.7)",
+						pointBackgroundColor: "rgba(26,179,148,1)",
+						pointBorderColor: "#fff",
+						data: data_grafik
+					}
+					]
+				};
+				var lineOptions = {
+					responsive: true
+				};
+
+				var ctx = $(document).find('.canvas-grafik').eq(-1)[0].getContext('2d');
+				new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
+
+				ii = ii + 1;
+
+			}
+			hideSpinner();
+		});
+
+});
+});
+
+function renderTableError(data){
+
+	let list_of_tr_error = '';
+	for (var i = 0; i < data.list_of_error.length ; i++) {
+		td_iterasi = `<td>${data.list_of_error[i].iterasi}</td>`;
+		td_error = `<td>${data.list_of_error[i].error}</td>`;
+		tr_detail_error = `<tr>${td_iterasi}${td_error}</tr>`;
+		list_of_tr_error = list_of_tr_error + tr_detail_error;
+	}
+	return list_of_tr_error;
+}
+
+function renderTableInitialU(jumlah_cluster, data){
+	let thead = "<thead>";
+	let initial_u_thead = "<tr>";
+	for (var i = 0; i < jumlah_cluster; i++) {
+		j = i + 1
+		initial_u_thead = initial_u_thead + `<th>x${j}</th>`;
+	}
+	initial_u_thead = initial_u_thead + "</tr>";
+	thead = thead + initial_u_thead + "<thead/>";
+
+
+
+	let tbody = "<tbody>";
+	let list_of_tr_initial_u = '';
+	for (var i = 0; i < data.initial_u.length ; i++) {
+
+		let = tr_of_tbody = "<tr>";
+
+		for (var j = 0; j < data.initial_u[i].length; j++) {
+			tr_of_tbody =  tr_of_tbody + `<td>${data.initial_u[i][j]}</td>`;
+		}
+		tr_of_tbody = tr_of_tbody + "</tr>";
+
+		list_of_tr_initial_u = list_of_tr_initial_u + tr_of_tbody;
+
+	}
+	tbody = tbody + list_of_tr_initial_u + "<tbody/>";
+
+	let content = thead + tbody;
+	return content;
+
+}
+function renderTableFinalU(jumlah_cluster, data){
+	let thead = "<thead>";
+	let final_u_thead = "<tr>";
+	for (var i = 0; i < jumlah_cluster; i++) {
+		j = i + 1
+		final_u_thead = final_u_thead + `<th>x${j}</th>`;
+	}
+	final_u_thead = final_u_thead + "<th>Cluster</th>";
+	final_u_thead = final_u_thead + "</tr>";
+	thead = thead + final_u_thead + "<thead/>";
+
+	let tbody = "<tbody>";
+
+	let list_of_tr_final_u = '';
+	for (var i = 0; i < data.final_u.length ; i++) {
+
+		let = tr_of_tbody = "<tr>";
+
+		for (var j = 0; j < data.final_u[i].length; j++) {
+			tr_of_tbody =  tr_of_tbody + `<td>${data.final_u[i][j]}</td>`;
+		}
+		tr_of_tbody = tr_of_tbody + `<td>${data.hasil_cluster[i]+1}</td>`;
+		tr_of_tbody = tr_of_tbody + "</tr>";
+
+		list_of_tr_final_u = list_of_tr_final_u + tr_of_tbody;
+
+	}
+	tbody = tbody + list_of_tr_final_u + "<tbody/>";
+
+	let content = thead + tbody;
+	return content;
+
+
+}
+function renderTableDataWithCluster(data){
+
+	let list_of_tr_with_cluster = '';
+	for (var i = 0; i < data.data_latih.length ; i++) {
+
+		let tr_of_tbody = `<tr>
+		<td>${data.data_latih[i].id}</td>
+		<td>${data.data_latih[i].nama}</td>
+		<td>${data.data_latih[i].norm_usia}</td>
+		<td>${data.data_latih[i].norm_pemain_inti}</td>
+		<td>${data.data_latih[i].norm_cadangan_main}</td>
+		<td>${data.data_latih[i].norm_mop}</td>
+		<td>${data.data_latih[i].norm_kk}</td>
+		<td>${data.data_latih[i].norm_km}</td>
+		<td>${data.data_latih[i].norm_gol}</td>
+		<td>${data.data_latih[i].norm_assist}</td>
+		<td>${data.data_latih[i].norm_pelanggaran}</td>
+		<td>${data.data_latih[i].norm_dilanggar_lawan}</td>
+		<td>${data.data_latih[i].norm_akurasi_tembakan}</td>
+		<td>${data.data_latih[i].norm_akurasi_operan}</td>
+		<td>${data.data_latih[i].norm_akurasi_umpan_silang}</td>
+		<td>${data.data_latih[i].norm_sukses_dribel}</td>
+		<td>${data.hasil_cluster[i]+1}</td>
+		</tr>`;
+
+		list_of_tr_with_cluster = list_of_tr_with_cluster + tr_of_tbody;
+
+	}
+	return list_of_tr_with_cluster
+
+}
+function renderTablePerCluster(data){
+	let tr_content = '';
+	for (var k = 0; k < data.length ; k++) {
+
+		let tr_of_tbody = `<tr>
+		<td>${data[k].id}</td>
+		<td>${data[k].nama}</td>
+		<td>${data[k].norm_usia}</td>
+		<td>${data[k].norm_pemain_inti}</td>
+		<td>${data[k].norm_cadangan_main}</td>
+		<td>${data[k].norm_mop}</td>
+		<td>${data[k].norm_kk}</td>
+		<td>${data[k].norm_km}</td>
+		<td>${data[k].norm_gol}</td>
+		<td>${data[k].norm_assist}</td>
+		<td>${data[k].norm_pelanggaran}</td>
+		<td>${data[k].norm_dilanggar_lawan}</td>
+		<td>${data[k].norm_akurasi_tembakan}</td>
+		<td>${data[k].norm_akurasi_operan}</td>
+		<td>${data[k].norm_akurasi_umpan_silang}</td>
+		<td>${data[k].norm_sukses_dribel}</td>
+		</tr>`;
+
+		tr_content = tr_content + tr_of_tbody;
+
+	}
+	return tr_content;
+}
+</script>
+{% endblock inline-js %}

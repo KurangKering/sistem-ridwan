@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from .forms import DataLatihKiperForm
-from .models import DataLatihKiper
+from fcm.models import DataLatihPemain
 from utils.helper import *
 from django.forms.models import model_to_dict
 import openpyxl
@@ -34,7 +34,7 @@ def data_latih_detail(request):
     	context = context_response(False, 'id tidak boleh kosong')
 
 
-    data_latih_kiper = DataLatihKiper.objects.get(pk=id_data_latih_kiper)
+    data_latih_kiper = DataLatihPemain.objects.get(pk=id_data_latih_kiper)
     serial = model_to_dict(data_latih_kiper)
 
     context = context_response(True, serial)
@@ -61,7 +61,8 @@ def data_latih_insert(request):
 	form = DataLatihKiperForm(request.POST)
 	if form.is_valid():
 		post_data = form.cleaned_data
-		data_latih_kiper = DataLatihKiper()
+		data_latih_kiper = DataLatihPemain()
+		data_latih_kiper.posisi = 1
 		data_latih_kiper.nama = post_data['nama']
 		data_latih_kiper.usia = post_data['usia']
 		data_latih_kiper.pemain_inti = post_data['pemain_inti']
@@ -89,7 +90,7 @@ def data_latih_update(request):
 
 	if form.is_valid():
 		post_data = form.cleaned_data
-		data_latih_kiper = DataLatihKiper.objects.get(pk=request.POST.get('id'))
+		data_latih_kiper = DataLatihPemain.objects.get(pk=request.POST.get('id'))
 		data_latih_kiper.nama = post_data['nama']
 		data_latih_kiper.usia = post_data['usia']
 		data_latih_kiper.pemain_inti = post_data['pemain_inti']
@@ -113,7 +114,7 @@ def data_latih_update(request):
 @csrf_exempt
 def data_latih_delete(request):
     id_data_latih_kiper = request.POST.get('id')
-    data_latih_kiper = DataLatihKiper.objects.get(pk=id_data_latih_kiper)
+    data_latih_kiper = DataLatihPemain.objects.get(pk=id_data_latih_kiper)
 
     if (data_latih_kiper.delete()):
     	context = context_response(True, 'sukses menghapus data latih')
@@ -129,7 +130,7 @@ def data_latih_import(request):
 	excel_file = request.FILES['excel_file']
 
 	wb = openpyxl.load_workbook(excel_file)
-	worksheet = wb['sheet1']
+	worksheet = wb['Sheet1']
 	excel_data = []
 
 	field_names = [
@@ -150,15 +151,16 @@ def data_latih_import(request):
 		row_data = dict()
 		for index in range(len(row)):
 			row_data[field_names[index]] = str(row[index].value).strip()
-			data_latih_kiper = DataLatihKiper(**row_data)
+			data_latih_kiper = DataLatihPemain(**row_data)
+			data_latih_kiper.posisi = 1
 			data_latih_kiper.set_bobot_data()
 		excel_data.append(data_latih_kiper)
 
 
 
 	if request.POST.get('hapus_seluruh_data') == 'on':
-		DataLatihKiper.objects.all().delete()
-		table_name = DataLatihKiper.objects.model._meta.db_table
+		DataLatihPemain.get_posisi_kiper().delete()
+		table_name = DataLatihPemain.objects.model._meta.db_table
 
 		sql = ""
 
@@ -171,9 +173,9 @@ def data_latih_import(request):
 
 		with connection.cursor() as cursor:
 			cursor.execute(sql)
-			
-	DataLatihKiper.objects.bulk_create(excel_data)
-	total_data = len(DataLatihKiper.objects.all().values())
+
+	DataLatihPemain.objects.bulk_create(excel_data)
+	total_data = len(DataLatihPemain.get_posisi_kiper().values())
 	context = context_response(True, {'total_data': total_data})
 	return JsonResponse(context, safe=False)
 
@@ -196,7 +198,7 @@ def pengujian_proses(request):
 	max_iter = int(request.POST.get('max_iter'))
 	max_error = float(request.POST.get('max_error'))
 
-	data_latih_all_fields = DataLatihKiper.objects.all()
+	data_latih_all_fields = DataLatihPemain.get_posisi_kiper()
 	data_latih = list(data_latih_all_fields.values('id', 'nama', 'norm_usia', 'norm_pemain_inti', 'norm_cadangan_main', 'norm_mop', 'norm_kk', 'norm_km', 'norm_gol', 'norm_kemasukan', 'norm_penyelamatan'))
 
 	data_to_list = [[v for k, v in d.items() if not k in ['id', 'nama']] for d in data_latih]
@@ -223,7 +225,7 @@ def pengujian_proses(request):
 		convert_to_string = {k:str(v) for k,v in data_with_hasil[x].items()}
 		data_with_hasil[x] = convert_to_string
 
-	data_latih_numpy = np.array(data_latih)	
+	data_latih_numpy = np.array(data_latih)
 	unique_clusters = np.unique(hasil_cluster)
 	data_per_cluster = []
 	indices_clusters = []

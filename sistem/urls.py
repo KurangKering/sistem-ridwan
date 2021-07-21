@@ -21,5 +21,8 @@ urlpatterns = [
 	path('', views.index, name="index"),
     path('admin/', admin.site.urls),
     path('kiper/', include('kiper.urls')),
+    path('pemain_belakang/', include('pemain_belakang.urls')),
+    path('pemain_tengah/', include('pemain_tengah.urls')),
+    path('pemain_depan/', include('pemain_depan.urls')),
 
 ]

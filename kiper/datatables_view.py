@@ -1,6 +1,6 @@
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
-from .models import DataLatihKiper
+from fcm.models import DataLatihPemain
 from django.db.models import Q
 
 import functools
@@ -8,7 +8,7 @@ import operator
 
 class DataLatihKiperDataTables(BaseDatatableView):
     # The model we're going to show
-    model = DataLatihKiper
+    model = DataLatihPemain
 
     # define the columns that will be returned
     columns = ['id', 'nama', 'usia', 'pemain_inti', 'cadangan_main', 'mop', 'kk', 'km', 'gol', 'kemasukan', 'penyelamatan']
@@ -23,6 +23,8 @@ class DataLatihKiperDataTables(BaseDatatableView):
     # and make it return huge amount of data
     max_display_length = 500
 
+    def get_initial_queryset(self):
+    	return DataLatihPemain.get_posisi_kiper()
 
     def render_column(self, row, column):
         # # We want to render user as a custom column

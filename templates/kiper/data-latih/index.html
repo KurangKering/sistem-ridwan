@@ -205,6 +205,7 @@ $(function() {
 	let data_latih_table = $("#data_latih_table").DataTable({
 		"processing": true,
 		"serverSide": true,
+		"scrollX": true,
 		"ajax": "{% url 'kiper/data-latih/datatables' %}",
 		"columns": [
 
