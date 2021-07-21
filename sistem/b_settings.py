@@ -42,7 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kiper'
+    'fcm',
+    'kiper',
+    'pemain_belakang',
+    'pemain_tengah',
+    'pemain_depan'
 ]
 
 MIDDLEWARE = [
