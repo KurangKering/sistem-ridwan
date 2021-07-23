@@ -61,7 +61,7 @@
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 				<h4 class="modal-title" id="data-latih-modal-title">Tambah data latih kiper</h4>
 			</div>
-			<form id="data_latih_form" method="POST">
+			<form id="data_latih_form" onsubmit="return false;">
 				<input type="hidden" name="id" value="id" id="id">
 				<div class="modal-body">
 					<div class="row">
@@ -97,7 +97,7 @@
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 				<h4 class="modal-title">Import data dari excel</h4>
 			</div>
-			<form id="import_data_form" method="POST">
+			<form id="import_data_form" onsubmit="return false;">
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-sm-12">
@@ -171,6 +171,7 @@ $(function() {
 
 	$(document).on('submit', 'form#import_data_form', function(e) {
 		e.preventDefault();
+		showSpinner();
 		var data = new FormData(this);
 
 		var url = "{% url 'kiper/data-latih/import' %}"
@@ -190,6 +191,9 @@ $(function() {
 				$("#import_data_modal").modal('hide');
 				Swal.fire({icon: 'success', showConfirmButton: false, timer: 1000})
 			}
+		})
+		.always(function(response) {
+			hideSpinner();
 		});
 		
 	})
