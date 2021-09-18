@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block import-css %}
+
+{% endblock import-css %}
+
+{% block content %}
+<div class="wrapper wrapper-content">
+	<div class="container-fluid">
+        <div class="card" style="min-height: 83vh;">
+            <div class="card-body ">
+              <div class="text-center d-flex align-items-stretch justify-content-center">
+                <div class="">
+                  <h2 style="font-weight: bold;">CLUSTERING PEMAIN BOLA MENGGUNAKAN </br>
+                    FUZZY C-MEANS
+                  </h2>
+                  <img class="img-fluid" style="margin: 20px;" src="{% static '/img/logo-uin.png' %}" alt="">
+                  <p style="font-size: 28px; margin-bottom: 0px;margin-top: 10px;"><strong>RIDWAN PUTRA</strong> (0000000000)</p>
+                  <P style="font-size: 28px; margin: 0;">UNIVERSITAS ISLAM NEGERI SULTAN SYARIF KASIM RIAU</P>
+                </div>
+              </div>
+            </div>
+          </div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block inline-js %}
+{% endblock inline-js %}
