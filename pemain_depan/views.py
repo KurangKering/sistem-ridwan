@@ -128,48 +128,57 @@ def data_latih_delete(request):
 @csrf_exempt
 def data_latih_import(request):
 
-    excel_file = request.FILES['excel_file']
+    try:
+        excel_file = request.FILES['excel_file']
 
-    wb = openpyxl.load_workbook(excel_file)
-    worksheet = wb['Sheet1']
-    excel_data = []
+        wb = openpyxl.load_workbook(excel_file)
+        worksheet = wb['Sheet1']
+        excel_data = []
 
-    field_names = [
-       'nama',
-       'usia',
-       'pemain_inti',
-       'cadangan_main',
-       'mop',
-       'kk',
-       'km',
-       'gol',
-       'assist',
-       'pelanggaran',
-       'dilanggar_lawan',
-       'akurasi_tembakan',
-       'akurasi_operan',
-       'akurasi_umpan_silang',
-       'sukses_dribel',
-       ]
+        field_names = [
+           'nama',
+           'usia',
+           'pemain_inti',
+           'cadangan_main',
+           'mop',
+           'kk',
+           'km',
+           'gol',
+           'assist',
+           'pelanggaran',
+           'dilanggar_lawan',
+           'akurasi_tembakan',
+           'akurasi_operan',
+           'akurasi_umpan_silang',
+           'sukses_dribel',
+           ]
 
-    for row in islice(worksheet.iter_rows(), 1, None):
+        for row in islice(worksheet.iter_rows(), 1, None):
 
-       row_data = dict()
-       for index in range(len(row)):
-         row_data[field_names[index]] = str(row[index].value).strip()
-         data_latih_depan = DataLatihPemain(**row_data)
-         data_latih_depan.posisi = 4
-         data_latih_depan.set_bobot_data()
-       excel_data.append(data_latih_depan)
+           row_data = dict()
+           for index in range(len(row)):
+             row_data[field_names[index]] = str(row[index].value).strip()
+             data_latih_depan = DataLatihPemain(**row_data)
+             data_latih_depan.posisi = 4
+             data_latih_depan.set_bobot_data()
+           excel_data.append(data_latih_depan)
 
 
 
-    if request.POST.get('hapus_seluruh_data') == 'on':
-       DataLatihPemain.get_posisi_depan().delete()
+        if request.POST.get('hapus_seluruh_data') == 'on':
+           DataLatihPemain.get_posisi_depan().delete()
 
-    DataLatihPemain.objects.bulk_create(excel_data)
-    total_data = len(DataLatihPemain.get_posisi_depan().values())
-    context = context_response(True, {'total_data': total_data})
+        DataLatihPemain.objects.bulk_create(excel_data)
+        total_data = len(DataLatihPemain.get_posisi_depan().values())
+        context = context_response(True, {'total_data': total_data})
+    
+    except IndexError as e:
+        context = context_response(False, 'Format Excel tidak sesuai')
+    except ValueError as e:
+        context = context_response(False, 'Terdapat data kosong. Periksa kembali file import')
+    except Exception as e:
+        context = context_response(False, 'Harap pilih file import berformat excel')                
+        
     return JsonResponse(context, safe=False)
 
 #

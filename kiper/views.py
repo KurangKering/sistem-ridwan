@@ -127,56 +127,68 @@ def data_latih_delete(request):
 @csrf_exempt
 def data_latih_import(request):
 
-	excel_file = request.FILES['excel_file']
+	
 
-	wb = openpyxl.load_workbook(excel_file)
-	worksheet = wb['Sheet1']
-	excel_data = []
+	try:
 
-	field_names = [
-		'nama',
-		'usia',
-		'pemain_inti',
-		'cadangan_main',
-		'mop',
-		'kk',
-		'km',
-		'gol',
-		'kemasukan',
-		'penyelamatan',
-		]
+		excel_file = request.FILES['excel_file']
 
-	for row in islice(worksheet.iter_rows(), 1, None):
+		wb = openpyxl.load_workbook(excel_file)
+		worksheet = wb['Sheet1']
+		excel_data = []
 
-		row_data = dict()
-		for index in range(len(row)):
-			row_data[field_names[index]] = str(row[index].value).strip()
-			data_latih_kiper = DataLatihPemain(**row_data)
-			data_latih_kiper.posisi = 1
-			data_latih_kiper.set_bobot_data()
-		excel_data.append(data_latih_kiper)
+		field_names = [
+			'nama',
+			'usia',
+			'pemain_inti',
+			'cadangan_main',
+			'mop',
+			'kk',
+			'km',
+			'gol',
+			'kemasukan',
+			'penyelamatan',
+			]
+
+		for row in islice(worksheet.iter_rows(), 1, None):
+			row_data = dict()
+			for index in range(len(row)):
+				row_data[field_names[index]] = str(row[index].value).strip()
+				data_latih_kiper = DataLatihPemain(**row_data)
+				data_latih_kiper.posisi = 1
+				data_latih_kiper.set_bobot_data()
+			excel_data.append(data_latih_kiper)
+
+		if request.POST.get('hapus_seluruh_data') == 'on':
+			DataLatihPemain.get_posisi_kiper().delete()
+			table_name = DataLatihPemain.objects.model._meta.db_table
+
+			sql = ""
+
+			if (connection.vendor == 'sqlite'):
+				sql = "DELETE FROM SQLite_sequence WHERE name='{}';".format(table_name)
+			elif (connection.vendor == 'postgresql'):
+				sequence = f"{table_name}_id_seq"
+				sql = "ALTER SEQUENCE {} RESTART WITH 1;".format(sequence)
 
 
+			with connection.cursor() as cursor:
+				cursor.execute(sql)
 
-	if request.POST.get('hapus_seluruh_data') == 'on':
-		DataLatihPemain.get_posisi_kiper().delete()
-		table_name = DataLatihPemain.objects.model._meta.db_table
+		DataLatihPemain.objects.bulk_create(excel_data)
+		total_data = len(DataLatihPemain.get_posisi_kiper().values())
+		context = context_response(True, {'total_data': total_data})
 
-		sql = ""
+	
+	except IndexError as e:
+		context = context_response(False, 'Format Excel tidak sesuai')
+	except ValueError as e:
+		context = context_response(False, 'Terdapat data kosong. Periksa kembali file import')
 
-		if (connection.vendor == 'sqlite'):
-			sql = "DELETE FROM SQLite_sequence WHERE name='{}';".format(table_name)
-		elif (connection.vendor == 'postgresql'):
-			sequence = f"{table_name}_id_seq"
-			sql = "ALTER SEQUENCE {} RESTART WITH 1;".format(sequence)
+	except Exception as e:
+		context = context_response(False, 'Harap pilih file import berformat excel')
 
 
-		with connection.cursor() as cursor:
-			cursor.execute(sql)
-
-	DataLatihPemain.objects.bulk_create(excel_data)
-	total_data = len(DataLatihPemain.get_posisi_kiper().values())
-	context = context_response(True, {'total_data': total_data})
 	return JsonResponse(context, safe=False)
 
 #
