@@ -112,6 +112,8 @@
 			</div>
 			<form id="import_data_form" onsubmit="return false;">
 				<div class="modal-body">
+					<div id="message-error" >
+					</div>
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">
@@ -159,13 +161,13 @@ $(function() {
 			kk: $('#kk').val(),
 			km: $('#km').val(),
 			gol: $('#gol').val(),
-			assist: $('assist').val(),
-			pelanggaran: $('pelanggaran').val(),
-			dilanggar_lawan: $('dilanggar_lawan').val(),
-			akurasi_tembakan: $('akurasi_tembakan').val(),
-			akurasi_operan: $('akurasi_operan').val(),
-			akurasi_umpan_silang: $('akurasi_umpan_silang').val(),
-			sukses_dribel: $('sukses_dribel').val(),
+			assist: $('#assist').val(),
+			pelanggaran: $('#pelanggaran').val(),
+			dilanggar_lawan: $('#dilanggar_lawan').val(),
+			akurasi_tembakan: $('#akurasi_tembakan').val(),
+			akurasi_operan: $('#akurasi_operan').val(),
+			akurasi_umpan_silang: $('#akurasi_umpan_silang').val(),
+			sukses_dribel: $('#sukses_dribel').val(),
 		};
 
 		$.ajax({
@@ -208,6 +210,10 @@ $(function() {
 				data_latih_table.ajax.reload(null, false);
 				$("#import_data_modal").modal('hide');
 				Swal.fire({icon: 'success', showConfirmButton: false, timer: 1000})
+			} else {
+				$("#message-error").html(`<div class="alert alert-danger">`+
+                                response.messages
+                            +`</div>`);
 			}
 		})
 		.always(function() {
@@ -221,6 +227,8 @@ $(function() {
 	});
 
 	$("#import_data_button").click(function(e) {
+		$("#message-error").html('');
+		clearFormImport();
 		show_import_modal();
 	});
 
@@ -272,13 +280,13 @@ function clearForm() {
 	$("#kk").val('');
 	$("#km").val('');
 	$("#gol").val('');
-	$("assist").val('');
-	$("pelanggaran").val('');
-	$("dilanggar_lawan").val('');
-	$("akurasi_tembakan").val('');
-	$("akurasi_operan").val('');
-	$("akurasi_umpan_silang").val('');
-	$("sukses_dribel").val('');
+	$("#assist").val('');
+	$("#pelanggaran").val('');
+	$("#dilanggar_lawan").val('');
+	$("#akurasi_tembakan").val('');
+	$("#akurasi_operan").val('');
+	$("#akurasi_umpan_silang").val('');
+	$("#sukses_dribel").val('');
 }
 function clearFormImport() {
 	$('#hapus_seluruh_data').prop('checked', false); 

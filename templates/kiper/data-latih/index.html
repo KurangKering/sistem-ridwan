@@ -99,6 +99,8 @@
 			</div>
 			<form id="import_data_form" onsubmit="return false;">
 				<div class="modal-body">
+					<div id="message-error" >
+					</div>
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">
@@ -190,6 +192,10 @@ $(function() {
 				data_latih_table.ajax.reload(null, false);
 				$("#import_data_modal").modal('hide');
 				Swal.fire({icon: 'success', showConfirmButton: false, timer: 1000})
+			} else {
+				$("#message-error").html(`<div class="alert alert-danger">`+
+                                response.messages
+                            +`</div>`);
 			}
 		})
 		.always(function(response) {
@@ -203,6 +209,8 @@ $(function() {
 	});
 
 	$("#import_data_button").click(function(e) {
+		$("#message-error").html('');
+		clearFormImport();
 		show_import_modal();
 	});
 
